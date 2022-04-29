@@ -4,6 +4,7 @@ import com.example.nukatokenajwt.dao.PostRepository;
 import com.example.nukatokenajwt.dao.UserDao;
 import com.example.nukatokenajwt.entity.Post;
 import com.example.nukatokenajwt.entity.User;
+import com.example.nukatokenajwt.service.Exceptions.PostNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,6 @@ public class PostService {
         return posts;
     }
 
-
     public Iterable<Post> SearchPostsByName(String name){
         return postRepository.searchByPostTitle(name);
 
@@ -54,6 +54,38 @@ public class PostService {
     public List<Post> findPostByUser(User user){
 
         return  postRepository.findPostByUser(user);
+    }
+
+
+    public void updatePost(Long postId, String username){
+
+        Post post = postRepository.findPostByPostId(postId);
+        User user = userDao.findUserByUserName(username);
+
+        if(post.getUser() == user) {
+            post.setPostTitle(post.getPostTitle());
+            post.setPostDescription(post.getPostDescription());
+            postRepository.save(post);
+        } else {
+            throw new NotUserPostFound(
+                    "You can't edit this post!"
+            );
+        }
+
+    }
+
+    public void deletePost(Long postId, String username){
+        User user = userDao.findUserByUserName(username);
+        Post post = postRepository.findPostByPostId(postId);
+
+        if(post.getUser() == user){
+            postRepository.deleteById(postId);
+
+        } else {
+            throw new NotUserPostFound(
+                    "Post does not belongs to user!"
+            );
+        }
     }
 
 
@@ -75,13 +107,6 @@ public class PostService {
         post.setVoteCount(post.getVoteCount()+1);
        return postRepository.save(post);
     }
-
-
-    public Post commentPost(Long id){
-        Post post = postRepository.getById(id);
-        return post;
-    }
-
     public Post giveADisLike(Long id){
         Post post = postRepository.getById(id);
         post.setVoteCount(post.getVoteCount()-1);
@@ -90,6 +115,7 @@ public class PostService {
 
     public  Iterable<Post> showPostsByCategory(String category){
         return postRepository.findPostByCategory(category);
+
     }
 
 

@@ -75,6 +75,15 @@ public class PostController {
         return postService.selectPost(id);
     }
 
+
+    @DeleteMapping("/delete/{postId}")
+    public void deletePostById(@PathVariable("postId")Long postId, Principal principal){
+
+        String username = principal.getName();
+
+        postService.deletePost(postId, username);
+    }
+
     @GetMapping("/like/{id}")
     public Post likePostById(@PathVariable("id") Long id){
 

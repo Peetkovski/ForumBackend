@@ -6,6 +6,8 @@ import com.example.nukatokenajwt.dao.UserDao;
 import com.example.nukatokenajwt.entity.Comments;
 import com.example.nukatokenajwt.entity.Post;
 import com.example.nukatokenajwt.entity.User;
+import com.example.nukatokenajwt.service.Exceptions.HasForbiddenWordException;
+import com.example.nukatokenajwt.service.Exceptions.PostDoesNotExistsException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

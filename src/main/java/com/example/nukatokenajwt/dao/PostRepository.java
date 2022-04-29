@@ -26,6 +26,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select  f from Post as f order by f.postId desc")
     Iterable<Post> findByIdDesc();
     Iterable<Post> searchByPostTitle(String title);
+    Post findPostByPostId(Long postId);
 
     List<Post> findPostByUser(User user);
 

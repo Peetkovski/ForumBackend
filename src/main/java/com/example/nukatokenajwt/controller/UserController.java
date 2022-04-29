@@ -25,9 +25,9 @@ public class UserController {
 
     @GetMapping("/user/{username}")
     @PreAuthorize("hasRole('User')")
-    public UserInfoResponse findUser(@PathVariable("username") String username, UserInfoResponse userInfoResponse){
+    public UserInfoResponse findUser(@PathVariable("username") String username){
 
-      userInfoResponse = userService.findUser(username, userInfoResponse);
+      UserInfoResponse userInfoResponse = userService.findUser(username);
 
         return userInfoResponse;
     }

@@ -21,15 +21,12 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long postId;
-    @NotNull
     private String postTitle;
     private String postUrl;
     private Integer voteCount;
     @Lob
-    @NotNull
     private String postDescription;
     @Enumerated(EnumType.STRING)
-    @NotNull
     private Categories category;
     @CreationTimestamp
     private Date dateCreated;

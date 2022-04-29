@@ -6,6 +6,7 @@ import com.example.nukatokenajwt.entity.Gender;
 import com.example.nukatokenajwt.entity.Role;
 import com.example.nukatokenajwt.entity.User;
 import com.example.nukatokenajwt.entity.UserInfoResponse;
+import com.example.nukatokenajwt.service.Exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,8 +43,6 @@ public class UserService {
         User adminUser = new User();
         adminUser.setUserName("admin123");
         adminUser.setUserPassword(getEncodedPassword("admin@pass"));
-        adminUser.setUserFirstName("admin");
-        adminUser.setUserLastName("admin");
         Set<Role> adminRoles = new HashSet<>();
         adminRoles.add(adminRole);
         adminUser.setRole(adminRoles);
@@ -53,8 +52,6 @@ public class UserService {
         user.setUserName("raj123");
         user.setUserPassword(getEncodedPassword("raj123"));
         user.setUserPic("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/2048px-User_font_awesome.svg.png");
-        user.setUserFirstName("raj");
-        user.setUserLastName("sharma");
         user.setUserEmail("raj@wp.pl");
         user.setGender(Gender.MALE);
         Set<Role> userRoles = new HashSet<>();
@@ -64,7 +61,10 @@ public class UserService {
     }
 
     public User registerNewUser(User user) {
-        Role role = roleDao.findById("User").get();
+//        Role role = roleDao.findById("User").get();
+        Role role = new Role();
+        role.setRoleName("User");
+        role.setRoleDescription("Default role for user");
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(role);
         user.setRole(userRoles);
@@ -73,7 +73,7 @@ public class UserService {
         return userDao.save(user);
     }
 
-    public UserInfoResponse findUser(String username, UserInfoResponse userInfoResponse){
+    public UserInfoResponse findUser(String username){
 
         Boolean exists = userDao.selectExistsUsername(username);
         if(!exists){
@@ -84,6 +84,7 @@ public class UserService {
 
         }
         else {
+            UserInfoResponse userInfoResponse = new UserInfoResponse();
             User user = userDao.findUserByUserName(username);
             userInfoResponse.setUserName(user.getUserName());
             userInfoResponse.setUserPic(user.getUserPic());
@@ -93,10 +94,7 @@ public class UserService {
         }
     }
 
-    public User getAllPostsFromUser(User user){
 
-        return new User();
-    }
 
     public String getEncodedPassword(String password){
         return passwordEncoder.encode(password);

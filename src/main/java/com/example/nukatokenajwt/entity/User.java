@@ -1,26 +1,25 @@
 package com.example.nukatokenajwt.entity;
 
 import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
     @NotNull
     private String userName;
-    private String userFirstName;
-    private String userLastName;
-    @NotNull
     private String userPassword;
-    @NotNull
     private String userEmail;
     private String userPic;
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
