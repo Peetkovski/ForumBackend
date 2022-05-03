@@ -12,17 +12,19 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional
 public class CommentsService {
 
     private final UserDao userDao;
-    private CommentsRepository commentsRepository;
-    private PostRepository postRepository;
+    private final CommentsRepository commentsRepository;
+    private final PostRepository postRepository;
 
 
     public List<Comments> getCommentsFromPost(Long id){

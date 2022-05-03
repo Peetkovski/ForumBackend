@@ -4,6 +4,7 @@ import com.example.nukatokenajwt.dao.PostRepository;
 import com.example.nukatokenajwt.dao.UserDao;
 import com.example.nukatokenajwt.entity.Post;
 import com.example.nukatokenajwt.entity.User;
+import com.example.nukatokenajwt.service.Exceptions.NotUserPostFound;
 import com.example.nukatokenajwt.service.Exceptions.PostNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,38 +103,73 @@ class PostServiceTest {
 
     @Test
     void updatePost() {
+        Long postId = 1L;
+        String username = "tom";
+      User user = new User();
+      user.setUserPassword("12345");
+      user.setUserName("tom");
+      userDao.save(user);
+      Post post = new Post();
+      post.setPostId(1L);
+      post.setPostTitle("es");
+      post.setPostDescription("opis");
+      post.setUser(user);
+      postRepository.save(post);
+
+      when(postRepository.findPostByPostId(1L)).thenReturn(post);
+      when(userDao.findUserByUserName("tom")).thenReturn(user);
+
+      post.setPostDescription("Essa");
+      postService.updatePost(postId, username);
+
+    }
+
+    @Test
+    void throwNotUpdatePost(){
+        Long postId = 1L;
+        String username = "tom";
         User user = new User();
-        user.setUserName("raj123");
+        user.setUserPassword("12345");
+        user.setUserName("tom");
+        userDao.save(user);
         Post post = new Post();
         post.setPostId(1L);
+        post.setPostTitle("es");
+        post.setPostDescription("opis");
+        post.setUser(user);
         postRepository.save(post);
-        Long postId = 1L;
-        String username = "raj123";
-        Post post1 = postRepository.findPostByPostId(postId);
-        User user1 = userDao.findUserByUserName(username);
 
-            post1.setPostTitle("nazwa");
-            post1.setPostDescription("Opis");
-            postRepository.save(post1);
+        when(postRepository.findPostByPostId(1L)).thenReturn(post);
+        when(userDao.findUserByUserName("toma")).thenReturn(user);
+
+
+
+        assertThatThrownBy(() -> postService.updatePost(postId, user.getUserName()))
+                .isInstanceOf(NotUserPostFound.class)
+                .hasMessageContaining("You can't edit this post!");
 
     }
 
     @Test
     void deletePost() {
-        User user = new User();
-        user.setUserName("apweorng");
-        user.setUserPassword("wetwea");
-        userDao.save(user);
         Long postId = 1L;
+        String username = "tom";
+        User user = new User();
+        user.setUserPassword("12345");
+        user.setUserName("tom");
+        userDao.save(user);
         Post post = new Post();
         post.setPostId(1L);
-        post.setPostTitle("Java");
-        post.setPostDescription("Java problemy");
+        post.setPostTitle("es");
+        post.setPostDescription("opis");
         post.setUser(user);
-        user.setPost(post);
-        userDao.save(user);
         postRepository.save(post);
-            postService.deletePost(post.getPostId(), "Tom");
+
+        when(postRepository.findPostByPostId(1L)).thenReturn(post);
+        when(userDao.findUserByUserName("tom")).thenReturn(user);
+
+        postService.deletePost(post.getPostId(), post.getUser().getUserName());
+
     }
 
     @Test

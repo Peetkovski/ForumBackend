@@ -1,6 +1,6 @@
-package com.example.nukatokenajwt.entity;
+package com.example.nukatokenajwt.entity.response;
 
-import lombok.Data;
+import com.example.nukatokenajwt.entity.User;
 
 public class JwtResponse {
 

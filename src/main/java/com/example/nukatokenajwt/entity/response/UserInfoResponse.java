@@ -1,5 +1,6 @@
-package com.example.nukatokenajwt.entity;
+package com.example.nukatokenajwt.entity.response;
 
+import com.example.nukatokenajwt.entity.Gender;
 import lombok.Data;
 
 @Data

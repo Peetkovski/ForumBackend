@@ -1,18 +1,22 @@
 package com.example.nukatokenajwt.service;
 
+import com.example.nukatokenajwt.dao.RestorePasswordTokenRepository;
 import com.example.nukatokenajwt.dao.RoleDao;
 import com.example.nukatokenajwt.dao.UserDao;
-import com.example.nukatokenajwt.entity.Gender;
-import com.example.nukatokenajwt.entity.Role;
-import com.example.nukatokenajwt.entity.User;
-import com.example.nukatokenajwt.entity.UserInfoResponse;
+import com.example.nukatokenajwt.entity.*;
+import com.example.nukatokenajwt.entity.request.ChangePasswordRequest;
+import com.example.nukatokenajwt.entity.request.EmailRequest;
+import com.example.nukatokenajwt.entity.response.UserInfoResponse;
 import com.example.nukatokenajwt.service.Exceptions.UserNotFoundException;
+import com.example.nukatokenajwt.service.mail.MailService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,10 +27,10 @@ import java.util.Set;
 public class UserService {
 
     private final UserDao userDao;
-
     private final RoleDao roleDao;
-
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
+    private final RestorePasswordTokenRepository tokenRepository;
 
     public void initRoleAndUser() {
 
@@ -50,6 +54,7 @@ public class UserService {
 
         User user = new User();
         user.setUserName("raj123");
+        user.setUserEmail("peet@wp.pl");
         user.setUserPassword(getEncodedPassword("raj123"));
         user.setUserPic("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/2048px-User_font_awesome.svg.png");
         user.setUserEmail("raj@wp.pl");
@@ -73,6 +78,79 @@ public class UserService {
         return userDao.save(user);
     }
 
+    public User changeUserPassword(ChangePasswordRequest request){
+        RestorePasswordToken restorePasswordToken = tokenRepository.findRestorePasswordTokenByToken(request.getToken());
+        User user = userDao.findUserByUserName(restorePasswordToken.getUser().getUserName());
+
+        if (checkIfPasswordTokenValid(restorePasswordToken.getTimeDate(), restorePasswordToken.getValidUntil()) && !restorePasswordToken.isUsed()) {
+            restorePasswordToken.setUsed(true);
+        user.setUserPassword(getEncodedPassword(request.getUserPassword()));
+        return userDao.save(user);
+        } else{
+            throw new PasswordTokenIsExpiredException(
+                   "Password token is expired!"
+            );
+
+      }
+
+    }
+
+    @Async
+    public void sendRestorePasswordCode(EmailRequest request){
+        //TODO TYLKO JEDEN KOD WERYFIKACYJNY
+        Boolean exists = userDao.selectExistsUserEmail(request.getUserEmail());
+        if(exists){
+            LocalTime localTime = LocalTime.now();
+            LocalTime validUntilTime = localTime.plusMinutes(15);
+            User user = userDao.findUserByUserEmail(request.getUserEmail());
+            String token = restorePasswordToken(5);
+            RestorePasswordToken resetPassword = new RestorePasswordToken();
+            resetPassword.setToken(token);
+            resetPassword.setTimeDate(localTime);
+            resetPassword.setValidUntil(validUntilTime);
+            resetPassword.setUser(user);
+            resetPassword.setUsed(false);
+            System.out.println(user);
+                sendMail("Password Reset",
+                    user.getUserEmail(),
+                    "This is your code to restore password" + request.getUserEmail() + "This is your code:  "  + token );
+            tokenRepository.save(resetPassword);
+        } else{
+            throw new UserNotFoundException(
+                    "This email does not exists!"
+            );
+        }
+
+    }
+
+    public String restorePasswordToken(int n) {
+
+        String AlphaPassword= "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz"
+                + "!@#$%^&*";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int)(AlphaPassword.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(AlphaPassword
+                    .charAt(index));
+        }
+
+        return sb.toString();
+    }
+
+
+
     public UserInfoResponse findUser(String username){
 
         Boolean exists = userDao.selectExistsUsername(username);
@@ -92,6 +170,21 @@ public class UserService {
 
             return userInfoResponse;
         }
+    }
+
+
+    protected void sendMail(String subject, String userEmail, String content){
+
+        mailService.sendMail(new NotificationEmail(subject, userEmail , content));
+
+    }
+
+    private boolean checkIfPasswordTokenValid(LocalTime timeDate, LocalTime validUntil){
+        if(timeDate.isAfter(validUntil)){
+            return false;
+        }
+        else
+            return true;
     }
 
 

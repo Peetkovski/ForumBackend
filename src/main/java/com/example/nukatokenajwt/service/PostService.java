@@ -4,6 +4,7 @@ import com.example.nukatokenajwt.dao.PostRepository;
 import com.example.nukatokenajwt.dao.UserDao;
 import com.example.nukatokenajwt.entity.Post;
 import com.example.nukatokenajwt.entity.User;
+import com.example.nukatokenajwt.service.Exceptions.NotUserPostFound;
 import com.example.nukatokenajwt.service.Exceptions.PostNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

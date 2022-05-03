@@ -1,4 +1,4 @@
-package com.example.nukatokenajwt.service;
+package com.example.nukatokenajwt.service.Exceptions;
 
 public class NotUserPostFound extends RuntimeException {
     public NotUserPostFound(String msg){

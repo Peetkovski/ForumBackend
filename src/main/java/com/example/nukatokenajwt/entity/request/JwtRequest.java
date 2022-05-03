@@ -1,4 +1,4 @@
-package com.example.nukatokenajwt.entity;
+package com.example.nukatokenajwt.entity.request;
 
 import lombok.Data;
 

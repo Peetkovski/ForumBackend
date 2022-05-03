@@ -1,8 +1,8 @@
 package com.example.nukatokenajwt.service;
 
 import com.example.nukatokenajwt.dao.UserDao;
-import com.example.nukatokenajwt.entity.JwtRequest;
-import com.example.nukatokenajwt.entity.JwtResponse;
+import com.example.nukatokenajwt.entity.request.JwtRequest;
+import com.example.nukatokenajwt.entity.response.JwtResponse;
 import com.example.nukatokenajwt.entity.User;
 import com.example.nukatokenajwt.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
