@@ -96,7 +96,6 @@ public class UserService {
 
     @Async
     public void sendRestorePasswordCode(EmailRequest request){
-        //TODO TYLKO JEDEN KOD WERYFIKACYJNY
         Boolean exists = userDao.selectExistsUserEmail(request.getUserEmail());
         if(exists){
             LocalTime localTime = LocalTime.now();
@@ -129,18 +128,14 @@ public class UserService {
                 + "abcdefghijklmnopqrstuvxyz"
                 + "!@#$%^&*";
 
-        // create StringBuffer size of AlphaNumericString
         StringBuilder sb = new StringBuilder(n);
 
         for (int i = 0; i < n; i++) {
 
-            // generate a random number between
-            // 0 to AlphaNumericString variable length
             int index
                     = (int)(AlphaPassword.length()
                     * Math.random());
 
-            // add Character one by one in end of sb
             sb.append(AlphaPassword
                     .charAt(index));
         }
