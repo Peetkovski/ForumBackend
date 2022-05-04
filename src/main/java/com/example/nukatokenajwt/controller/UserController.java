@@ -5,7 +5,7 @@ import com.example.nukatokenajwt.entity.request.ChangePasswordRequest;
 import com.example.nukatokenajwt.entity.request.EmailRequest;
 import com.example.nukatokenajwt.entity.response.UserInfoResponse;
 import com.example.nukatokenajwt.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +15,10 @@ import javax.annotation.PostConstruct;
  * The type User controller.
  */
 @RestController
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
 
     /**
@@ -67,9 +67,7 @@ public class UserController {
     @PreAuthorize("hasRole('User')")
     public UserInfoResponse findUser(@PathVariable("username") String username){
 
-      UserInfoResponse userInfoResponse = userService.findUser(username);
-
-        return userInfoResponse;
+        return userService.findUser(username);
     }
 
 

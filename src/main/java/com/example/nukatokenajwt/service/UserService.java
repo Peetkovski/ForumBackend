@@ -46,18 +46,17 @@ public class UserService {
 
         User adminUser = new User();
         adminUser.setUserName("admin123");
-        adminUser.setUserPassword(getEncodedPassword("admin@pass"));
+        adminUser.setUserPassword(getEncodedPassword("admin"));
         Set<Role> adminRoles = new HashSet<>();
         adminRoles.add(adminRole);
         adminUser.setRole(adminRoles);
         userDao.save(adminUser);
 
         User user = new User();
-        user.setUserName("raj123");
-        user.setUserEmail("peet@wp.pl");
-        user.setUserPassword(getEncodedPassword("raj123"));
+        user.setUserName("peet");
+        user.setUserEmail("peet");
+        user.setUserPassword(getEncodedPassword("peet123"));
         user.setUserPic("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/2048px-User_font_awesome.svg.png");
-        user.setUserEmail("raj@wp.pl");
         user.setGender(Gender.MALE);
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(userRole);

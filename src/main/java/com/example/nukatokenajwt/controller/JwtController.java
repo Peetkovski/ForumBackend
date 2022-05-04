@@ -3,6 +3,7 @@ package com.example.nukatokenajwt.controller;
 import com.example.nukatokenajwt.entity.request.JwtRequest;
 import com.example.nukatokenajwt.entity.response.JwtResponse;
 import com.example.nukatokenajwt.service.JwtService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/posts")
 @PreAuthorize("hasRole('User')")
 public class PostController {
