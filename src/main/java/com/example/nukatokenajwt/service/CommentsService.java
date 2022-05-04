@@ -8,7 +8,7 @@ import com.example.nukatokenajwt.entity.Post;
 import com.example.nukatokenajwt.entity.User;
 import com.example.nukatokenajwt.service.Exceptions.HasForbiddenWordException;
 import com.example.nukatokenajwt.service.Exceptions.PostDoesNotExistsException;
-import lombok.AllArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,6 @@ import java.util.List;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 @Transactional
 public class CommentsService {
 
@@ -26,8 +25,13 @@ public class CommentsService {
     private final CommentsRepository commentsRepository;
     private final PostRepository postRepository;
 
+	public CommentsService(final UserDao userDao, final CommentsRepository commentsRepository, final PostRepository postRepository) {
+		this.userDao = userDao;
+		this.commentsRepository = commentsRepository;
+		this.postRepository = postRepository;
+	}
 
-    public List<Comments> getCommentsFromPost(Long id){
+	public List<Comments> getCommentsFromPost(Long id){
         Post post = postRepository.findById(id).orElseThrow(() -> new PostDoesNotExistsException(
                 "Post does not exists"
         ));

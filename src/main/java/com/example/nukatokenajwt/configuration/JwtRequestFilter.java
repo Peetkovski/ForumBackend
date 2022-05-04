@@ -4,10 +4,9 @@ import com.example.nukatokenajwt.service.JwtService;
 import com.example.nukatokenajwt.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -23,14 +22,15 @@ import java.io.IOException;
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+    private final JwtService jwtService;
 
-    @Autowired
-    private JwtService jwtService;
+	public JwtRequestFilter(final JwtUtil jwtUtil, final JwtService jwtService) {
+		this.jwtUtil = jwtUtil;
+		this.jwtService = jwtService;
+	}
 
-
-    @Override
+	@Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
